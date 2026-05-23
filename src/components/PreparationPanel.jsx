@@ -1,0 +1,171 @@
+import { useState } from 'react';
+import { generateCurrentDayDetails, generateFuturePlan } from '../engine/calculator';
+
+export default function PreparationPanel({ archetypeKey }) {
+  // Current system date from local environment metadata (2026-05-23)
+  const systemTodayStr = "2026-05-23";
+  const [selectedDate, setSelectedDate] = useState(systemTodayStr);
+
+  const dayDetails = archetypeKey && selectedDate 
+    ? generateCurrentDayDetails(archetypeKey, new Date(selectedDate)) 
+    : null;
+  const roadmap = archetypeKey ? generateFuturePlan(archetypeKey) : null;
+
+  if (!archetypeKey) {
+    return (
+      <div className="card glass-effect placeholder-card fade-in" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '400px', textAlign: 'center', padding: '3rem' }}>
+        <div className="placeholder-icon" style={{ fontSize: '3.5rem', marginBottom: '1.5rem', opacity: 0.5 }}>⚡</div>
+        <h2 className="title-md" style={{ color: 'var(--text-muted)' }}>Daily Preparation Lock</h2>
+        <p className="subtitle" style={{ maxWidth: '400px', margin: '0.5rem auto 0 auto' }}>
+          Please complete your birth baseline entry on the left to activate your personalized behavioral guidelines, color selections, and daily operating plans.
+        </p>
+      </div>
+    );
+  }
+
+  if (!dayDetails || !roadmap) {
+    return (
+      <div className="card glass-effect fade-in" style={{ minHeight: '400px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div className="spinner"></div>
+      </div>
+    );
+  }
+
+  // Map color names to CSS colors for visual rendering
+  const cssColorMap = {
+    "Navy Blue": "#1e3a8a",
+    "Charcoal Grey": "#374151",
+    "Emerald Green": "#047857",
+    "Crimson": "#be123c",
+    "Onyx": "#111827",
+    "Sapphire": "#1d4ed8",
+    "Warm Terracotta": "#c2410c",
+    "Steel Blue": "#4682B4"
+  };
+
+  const badgeColor = cssColorMap[dayDetails.luckyColor] || 'var(--accent-blue)';
+
+  return (
+    <div className="preparation-container fade-in" style={{ width: '100%' }}>
+      <div className="card glass-effect" style={{ width: '100%', padding: '2rem' }}>
+        
+        {/* Date Selection Header */}
+        <div className="prep-header" style={{ borderBottom: '1px solid var(--card-border)', paddingBottom: '1.5rem', marginBottom: '1.5rem' }}>
+          <h2 className="title-md" style={{ marginBottom: '1rem' }}>Daily Operating Preparation</h2>
+          <div className="date-selector-group" style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+            <label style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '1px', color: 'var(--text-muted)', fontWeight: '600' }}>
+              Select Operational Date:
+            </label>
+            <input 
+              type="date" 
+              value={selectedDate} 
+              min={systemTodayStr}
+              onChange={(e) => setSelectedDate(e.target.value)}
+              style={{
+                padding: '0.75rem 1rem',
+                borderRadius: '8px',
+                background: 'rgba(0,0,0,0.3)',
+                border: '1px solid var(--card-border)',
+                color: 'var(--text-main)',
+                fontSize: '1rem',
+                fontFamily: 'Inter, sans-serif',
+                width: '100%',
+                maxWidth: '280px',
+                cursor: 'pointer'
+              }}
+            />
+            <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+              Showing preparation for <strong>{dayDetails.dayOfWeek}, {dayDetails.date}</strong>
+            </span>
+          </div>
+        </div>
+
+        {/* Tactical Preparations grid */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+          
+          {/* Dress Color & Behave section */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '1.5rem' }}>
+            
+            {/* Color Recommendation */}
+            <div className="collab-item" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--card-border)', borderRadius: '12px', padding: '1.25rem' }}>
+              <h4 style={{ fontSize: '1rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                👔 Color of the Dress & Style Cues
+              </h4>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                <div style={{
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '12px',
+                  background: badgeColor,
+                  border: '2px solid rgba(255,255,255,0.2)',
+                  boxShadow: `0 4px 12px ${badgeColor}40`
+                }} />
+                <div>
+                  <div style={{ fontWeight: '700', fontSize: '1.1rem', color: dayDetails.luckyColor === 'Onyx' ? '#fff' : badgeColor }}>
+                    {dayDetails.luckyColor}
+                  </div>
+                  <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginTop: '0.2rem' }}>
+                    {dayDetails.dressAdvice}
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Behavioral Guidance */}
+            <div className="collab-item" style={{ background: 'rgba(255,255,255,0.02)', border: '1px solid var(--card-border)', borderRadius: '12px', padding: '1.25rem' }}>
+              <h4 style={{ fontSize: '1rem', color: 'var(--text-muted)', display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem' }}>
+                🧠 How to Behave
+              </h4>
+              <p style={{ fontSize: '0.95rem', lineHeight: '1.5', color: 'var(--text-main)' }}>
+                {dayDetails.behavior}
+              </p>
+            </div>
+            
+          </div>
+
+          {/* Tactical Execution Strategy */}
+          <div style={{ background: 'rgba(59, 130, 246, 0.05)', borderLeft: '4px solid var(--accent-blue)', borderRadius: '0 12px 12px 0', padding: '1.25rem' }}>
+            <h4 style={{ fontSize: '1rem', color: 'var(--accent-blue)', marginBottom: '0.5rem' }}>
+              🎯 Today's Tactical Execution Strategy
+            </h4>
+            <p style={{ fontSize: '0.95rem', lineHeight: '1.5', color: 'var(--text-main)' }}>
+              {dayDetails.strategy}
+            </p>
+            <div style={{ marginTop: '0.75rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
+              Optimal Execution Metric (Lucky Number): <strong style={{ color: 'var(--text-main)', fontSize: '0.9rem' }}>{dayDetails.luckyNumber}</strong>
+            </div>
+          </div>
+
+          {/* Date Astrological baseline */}
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem', background: 'rgba(255,255,255,0.02)', border: '1px solid var(--card-border)', borderRadius: '12px', padding: '1.25rem' }}>
+            <div>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Moon Sign (Rashi)</span>
+              <div style={{ fontWeight: '600', fontSize: '1.1rem', marginTop: '0.2rem' }}>{dayDetails.rashi}</div>
+            </div>
+            <div>
+              <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>Lunar Mansion (Nakshatra)</span>
+              <div style={{ fontWeight: '600', fontSize: '1.1rem', marginTop: '0.2rem' }}>{dayDetails.nakshatra}</div>
+            </div>
+          </div>
+
+          {/* Forward Planning / Objectives */}
+          <div style={{ borderTop: '1px solid var(--card-border)', paddingTop: '1.5rem', marginTop: '0.5rem' }}>
+            <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>Roadmap Objectives</h3>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem' }}>
+              <div style={{ background: 'rgba(255,255,255,0.02)', padding: '1rem', borderRadius: '10px', borderLeft: '3px solid #E63946' }}>
+                <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#E63946', fontWeight: 'bold' }}>Tomorrow's Objective</span>
+                <p style={{ fontSize: '0.85rem', marginTop: '0.4rem', lineHeight: '1.4' }}>{roadmap.day1}</p>
+              </div>
+              <div style={{ background: 'rgba(255,255,255,0.02)', padding: '1rem', borderRadius: '10px', borderLeft: '3px solid #2A9D8F' }}>
+                <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: '#2A9D8F', fontWeight: 'bold' }}>30-Day Trajectory</span>
+                <p style={{ fontSize: '0.85rem', marginTop: '0.4rem', lineHeight: '1.4' }}>{roadmap.day30}</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+  );
+}
