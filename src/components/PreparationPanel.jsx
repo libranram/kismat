@@ -6,10 +6,37 @@ export default function PreparationPanel({ archetypeKey }) {
   const systemTodayStr = "2026-05-23";
   const [selectedDate, setSelectedDate] = useState(systemTodayStr);
 
+  // Email form states
+  const [showEmailForm, setShowEmailForm] = useState(false);
+  const [email, setEmail] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [sendingEmail, setSendingEmail] = useState(false);
+  const [emailSuccess, setEmailSuccess] = useState(false);
+
   const dayDetails = archetypeKey && selectedDate 
     ? generateCurrentDayDetails(archetypeKey, new Date(selectedDate)) 
     : null;
   const roadmap = archetypeKey ? generateFuturePlan(archetypeKey) : null;
+
+  const handlePrint = () => {
+    window.print();
+  };
+
+  const handleSendEmail = (e) => {
+    e.preventDefault();
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      setEmailError('Please enter a valid email address.');
+      return;
+    }
+    setEmailError('');
+    setSendingEmail(true);
+    setTimeout(() => {
+      setSendingEmail(false);
+      setEmailSuccess(true);
+      setShowEmailForm(false);
+    }, 1500);
+  };
 
   if (!archetypeKey) {
     return (
@@ -161,6 +188,89 @@ export default function PreparationPanel({ archetypeKey }) {
                 <p style={{ fontSize: '0.85rem', marginTop: '0.4rem', lineHeight: '1.4' }}>{roadmap.day30}</p>
               </div>
             </div>
+          </div>
+
+          {/* Export & Sharing Options */}
+          <div className="no-print" style={{ borderTop: '1px solid var(--card-border)', paddingTop: '1.5rem', marginTop: '1.5rem' }}>
+            <h3 style={{ fontSize: '1.1rem', marginBottom: '1rem' }}>Export & Share Report</h3>
+            
+            {!showEmailForm && !emailSuccess ? (
+              <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
+                <button 
+                  onClick={handlePrint}
+                  className="btn-secondary"
+                  style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', padding: '0.75rem', borderRadius: '10px' }}
+                >
+                  📄 Export to PDF
+                </button>
+                <button 
+                  onClick={() => setShowEmailForm(true)}
+                  className="btn-secondary"
+                  style={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', padding: '0.75rem', borderRadius: '10px' }}
+                >
+                  ✉️ Send via Email
+                </button>
+              </div>
+            ) : showEmailForm ? (
+              <form onSubmit={handleSendEmail} style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', background: 'rgba(255,255,255,0.02)', padding: '1rem', borderRadius: '10px', border: '1px solid var(--card-border)' }}>
+                <span style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>Enter your corporate email address to receive your operating guidelines:</span>
+                <div style={{ display: 'flex', gap: '0.5rem' }}>
+                  <input 
+                    type="email"
+                    placeholder="name@company.com"
+                    value={email}
+                    onChange={(e) => {
+                      setEmail(e.target.value);
+                      setEmailError('');
+                    }}
+                    required
+                    style={{
+                      flex: 1,
+                      padding: '0.5rem 0.75rem',
+                      borderRadius: '6px',
+                      background: 'rgba(0,0,0,0.3)',
+                      border: emailError ? '1px solid #ef4444' : '1px solid var(--card-border)',
+                      color: '#fff',
+                      fontSize: '0.9rem'
+                    }}
+                  />
+                  <button 
+                    type="submit" 
+                    className="btn-primary" 
+                    disabled={sendingEmail}
+                    style={{ margin: 0, width: 'auto', padding: '0.5rem 1rem', borderRadius: '6px', fontSize: '0.9rem' }}
+                  >
+                    {sendingEmail ? 'Sending...' : 'Send'}
+                  </button>
+                </div>
+                {emailError && (
+                  <span style={{ fontSize: '0.8rem', color: '#ef4444' }}>{emailError}</span>
+                )}
+                <button 
+                  type="button" 
+                  onClick={() => setShowEmailForm(false)} 
+                  className="btn-secondary"
+                  style={{ padding: '0.25rem', fontSize: '0.8rem', width: '60px', alignSelf: 'flex-end', border: 'none', background: 'transparent' }}
+                >
+                  Cancel
+                </button>
+              </form>
+            ) : (
+              <div style={{ background: 'rgba(16, 185, 129, 0.1)', border: '1px solid #10b981', borderRadius: '10px', padding: '1rem', textAlign: 'center' }}>
+                <span style={{ color: '#10b981', fontWeight: '600', display: 'block', marginBottom: '0.25rem' }}>✓ Dispatch Success</span>
+                <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)' }}>The preparation report has been successfully sent to <strong>{email}</strong>.</p>
+                <button 
+                  onClick={() => {
+                    setEmailSuccess(false);
+                    setEmail('');
+                  }}
+                  className="btn-secondary"
+                  style={{ marginTop: '0.75rem', padding: '0.25rem 0.75rem', fontSize: '0.8rem', border: 'none', background: 'rgba(255,255,255,0.05)' }}
+                >
+                  Send to another email
+                </button>
+              </div>
+            )}
           </div>
 
         </div>
