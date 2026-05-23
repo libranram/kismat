@@ -50,7 +50,7 @@ export default function InputForm({ onCalculate }) {
         </div>
 
         <button type="submit" className="btn-primary">
-          Generate Kismet Profile
+          Generate Kismat Profile
         </button>
       </form>
     </div>

@@ -1,10 +1,10 @@
-# Kismet
+# Kismat
 
-Kismet is an elite corporate behavioral analyst and psychometric engine. It translates user birth data into a sophisticated, professional personality profile suitable for workplace collaboration, leadership development, and behavioral training.
+Kismat is an elite corporate behavioral analyst and psychometric engine. It translates user birth data into a sophisticated, professional personality profile suitable for workplace collaboration, leadership development, and behavioral training.
 
 ## Frameworks Supported
 
-Kismet utilizes the "Business Chemistry" archetypes to classify professional personas:
+Kismat utilizes the "Business Chemistry" archetypes to classify professional personas:
 - **Pioneer**: Fire-dominant traits. Strategic visionary, fast-paced innovator.
 - **Guardian**: Earth-dominant traits. Operations stabilizer, structured risk manager.
 - **Driver**: Air-dominant traits. Analytical problem-solver, data-driven executor.

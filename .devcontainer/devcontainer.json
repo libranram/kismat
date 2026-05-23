@@ -1,5 +1,5 @@
 {
-  "name": "Kismet - React & Vite",
+  "name": "Kismat - React & Vite",
   "build": {
     "dockerfile": "Dockerfile"
   },

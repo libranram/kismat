@@ -62,7 +62,7 @@ function App() {
   return (
     <div className="app-container">
       <header className="app-header">
-        <h1 className="logo">Kismet.</h1>
+        <h1 className="logo">Kismat.</h1>
         <p className="tagline">Corporate Behavioral Analytics & Daily Preparation</p>
       </header>
 
@@ -90,7 +90,7 @@ function App() {
       </main>
       
       <footer className="app-footer">
-        <p>&copy; {new Date().getFullYear()} Kismet Corporate Insights. Confidential & Proprietary.</p>
+        <p>&copy; {new Date().getFullYear()} Kismat Corporate Insights. Confidential & Proprietary.</p>
       </footer>
     </div>
   );

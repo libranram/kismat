@@ -1,6 +1,6 @@
 ---
 name: Bug report
-about: Create a report to help us improve Kismet
+about: Create a report to help us improve Kismat
 title: ''
 labels: bug
 assignees: ''
