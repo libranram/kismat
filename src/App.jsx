@@ -83,7 +83,7 @@ function App() {
 
             {/* Right Panel: Daily preparation details */}
             <div className="right-panel">
-              <PreparationPanel archetypeKey={archetypeKey} />
+              <PreparationPanel archetypeKey={archetypeKey} profile={profile} />
             </div>
           </div>
         )}
