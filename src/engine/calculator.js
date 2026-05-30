@@ -129,6 +129,60 @@ export const generateCurrentDayDetails = (archetypeKey, targetDateInput = new Da
     ]
   };
 
+  const healthTips = {
+    Pioneer: [
+      "Protect your physical stamina tomorrow: Take a brisk 10-minute walk after lunch to reset your mental baseline.",
+      "Unwind your high-octane energy: Dedicate 5 minutes to deep breathing exercises before a high-stakes call.",
+      "High physical activation: Swap your afternoon espresso for green tea to prevent late-day energy crashes.",
+      "Focus on ergonomic posture: Set a reminder to roll your shoulders and stretch your wrists every 90 minutes."
+    ],
+    Guardian: [
+      "Combat sedentary fatigue: Stand and do light stretching during your routine status meetings tomorrow.",
+      "Alleviate eye strain: Practice the 20-20-20 rule—every 20 minutes, look at something 20 feet away for 20 seconds.",
+      "Ground your nervous system: Step away from all screens during your lunch break to enjoy mindful eating.",
+      "Recharge your focus: Take a micro-break every hour to stretch your back and hydrate."
+    ],
+    Driver: [
+      "Prevent burnout tomorrow: Schedule a hard stop for your workday and wind down with non-screen activity.",
+      "Release physical tension: Focus on relaxing your jaw and shoulders, which hold most of your execution stress.",
+      "Sustain cognitive performance: Drink a glass of water for every hour of deep analytical work.",
+      "Boost circulatory health: Take 5 minutes to do light leg stretches or walk in place between project sprints."
+    ],
+    Integrator: [
+      "Replenish social energy: Plan 15 minutes of quiet solitude or a walk in nature tomorrow to recharge.",
+      "Establish energetic boundaries: Practice a brief mindfulness check-in before entering team discussions.",
+      "Nurture physical wellness: Ensure you step outside to get natural sunlight for at least 10 minutes in the morning.",
+      "Reduce cognitive overload: Take short, silent breathing pauses between high-empathy meetings."
+    ]
+  };
+
+  const funnyTips = {
+    Pioneer: [
+      "Challenge: Try to explain your next big idea using only sound effects and hand gestures to yourself first.",
+      "Joy tip: High-five the next green plant you see to congratulate it on its excellent oxygen production.",
+      "Playful action: Sketch a quick caricature of your main project blocker as a cartoon villain.",
+      "Life hack: Sing your project status report to the tune of your favorite pop song in the shower."
+    ],
+    Guardian: [
+      "Challenge: Organize your desk drawer by color, then mess it up slightly to build emotional resilience.",
+      "Joy tip: Wear mismatched socks tomorrow as a secret, silent rebellion against corporate uniformity.",
+      "Playful action: Give your favorite office chair a formal performance review.",
+      "Life hack: Make a spreadsheet tracking the number of times someone says 'circle back' or 'synergy' tomorrow."
+    ],
+    Driver: [
+      "Challenge: Write a draft email entirely in emojis, laugh at it, and then delete it forever.",
+      "Joy tip: Celebrate a successful spreadsheet formula with a 5-second victory dance.",
+      "Playful action: Name your primary computer screen 'The Oracle' and consult it with dramatic bowing.",
+      "Life hack: Read your next action item out loud in a dramatic movie trailer voice."
+    ],
+    Integrator: [
+      "Challenge: Draw a tiny smiley face on your thumb and look at it when someone goes off-topic in a meeting.",
+      "Joy tip: Dedicate 20 seconds to making a ridiculous face in the mirror to reset your emotional energy.",
+      "Playful action: Start a rumor in your head that your office plant is plotting a friendly takeover.",
+      "Life hack: Send a mental high-five to a coworker you haven't spoken to in a while."
+    ]
+  };
+
   const luckyNumber = (hash % 9) + 1; // 1-9
   const luckyColor = colors[hash % colors.length];
   const strategy = strategies[hash % strategies.length];
@@ -137,6 +191,12 @@ export const generateCurrentDayDetails = (archetypeKey, targetDateInput = new Da
   const behaviorAdvice = behaviors[hash % behaviors.length];
   
   const dressAdvice = dressAdviceMap[luckyColor] || "Wear professional attire in comfortable colors.";
+
+  const healthTipList = healthTips[archetypeKey] || healthTips.Pioneer;
+  const healthTip = healthTipList[hash % healthTipList.length];
+
+  const funnyTipList = funnyTips[archetypeKey] || funnyTips.Pioneer;
+  const funnyTip = funnyTipList[hash % funnyTipList.length];
 
   // We also generate current day Rashi/Nakshatra for targetDate
   const currentObserver = new Observer(0, 0, 0);
@@ -156,7 +216,9 @@ export const generateCurrentDayDetails = (archetypeKey, targetDateInput = new Da
     luckyColor,
     dressAdvice,
     strategy,
-    behavior: behaviorAdvice
+    behavior: behaviorAdvice,
+    healthTip,
+    funnyTip
   };
 };
 
