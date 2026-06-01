@@ -1,0 +1,24 @@
+# Dependencies and build output (rebuilt inside Docker)
+node_modules
+dist
+dist-ssr
+
+# Dev/editor artifacts
+.devcontainer
+.vscode
+.idea
+.DS_Store
+
+# Git
+.git
+.gitignore
+.github
+
+# Logs & local env
+*.log
+*.local
+
+# Firebase
+firebase-debug.log
+.firebaserc
+firebase.json
