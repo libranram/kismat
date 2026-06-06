@@ -72,13 +72,75 @@ export const generateCorporateProfile = (rashi) => {
 
 export const generateCurrentDayDetails = (archetypeKey, targetDateInput = new Date()) => {
   const targetDate = typeof targetDateInput === 'string' ? new Date(targetDateInput) : targetDateInput;
-  const dateString = `${targetDate.getUTCFullYear()}-${targetDate.getUTCMonth()}-${targetDate.getUTCDate()}-${archetypeKey}`;
+
+  // Use a fully unique date string including year, zero-padded month, and day
+  const yyyy = targetDate.getUTCFullYear();
+  const mm = String(targetDate.getUTCMonth() + 1).padStart(2, '0');
+  const dd = String(targetDate.getUTCDate()).padStart(2, '0');
+  const dateString = `${yyyy}-${mm}-${dd}-${archetypeKey}`;
   
   let hash = 0;
   for (let i = 0; i < dateString.length; i++) {
     hash = dateString.charCodeAt(i) + ((hash << 5) - hash);
   }
   hash = Math.abs(hash);
+
+  // --- Compute today's planetary environment first ---
+  const currentObserver = new Observer(0, 0, 0);
+  const currentKundli = getKundli(targetDate, currentObserver);
+  const currentPanchangam = getPanchangamDetails(targetDate, currentObserver);
+  
+  const currentRashi = currentKundli.planets.Moon.rashiName;
+  const nIndex = typeof currentPanchangam.nakshatra === 'object' ? currentPanchangam.nakshatra.index : currentPanchangam.nakshatra;
+  const currentNakshatra = nakshatraNames[nIndex];
+
+  // Map today's Moon Rashi to its element for contextual characterization
+  const rashiElementMap = {
+    Aries: 'Fire', Leo: 'Fire', Sagittarius: 'Fire',
+    Taurus: 'Earth', Virgo: 'Earth', Capricorn: 'Earth',
+    Gemini: 'Air', Libra: 'Air', Aquarius: 'Air',
+    Cancer: 'Water', Scorpio: 'Water', Pisces: 'Water'
+  };
+  const dayElement = rashiElementMap[currentRashi] || 'Fire';
+
+  // Planetary influence note — contextual to the day's Moon Rashi
+  const rashiInfluenceMap = {
+    Aries:       "Moon in Aries ignites bold initiative. Channel this assertive energy into decisive leadership moments.",
+    Taurus:      "Moon in Taurus anchors the day in patience and practicality. Favor steady, tangible progress over rapid pivots.",
+    Gemini:      "Moon in Gemini sharpens mental agility. Leverage this for networking, negotiations, and communication-heavy tasks.",
+    Cancer:      "Moon in Cancer heightens emotional awareness. Attend carefully to team dynamics and interpersonal relationships.",
+    Leo:         "Moon in Leo amplifies confidence and creative expression. Step forward as a visible leader and inspire those around you.",
+    Virgo:       "Moon in Virgo favors meticulous review and refinement. Ideal for quality audits, detailed analysis, and process improvement.",
+    Libra:       "Moon in Libra drives harmonious collaboration. Focus on consensus-building, diplomacy, and balanced decision-making.",
+    Scorpio:     "Moon in Scorpio deepens focus and strategic intuition. Tackle complex, hidden challenges that require penetrating insight.",
+    Sagittarius: "Moon in Sagittarius expands the horizon. Ideal for strategic planning, big-picture thinking, and inspiring the wider team.",
+    Capricorn:   "Moon in Capricorn reinforces discipline and ambition. Push toward long-term goals and demonstrate executive accountability.",
+    Aquarius:    "Moon in Aquarius sparks original thinking. Innovate, challenge conventions, and seek solutions that break the mold.",
+    Pisces:      "Moon in Pisces enhances empathy and creative intuition. Rely on your instincts and foster a supportive, open environment."
+  };
+  const planetaryInfluence = rashiInfluenceMap[currentRashi] || `The Moon transits ${currentRashi} today — align your actions with its elemental energy.`;
+
+  // Element-archetype alignment characterization
+  const archetypeElement = { Pioneer: 'Fire', Guardian: 'Earth', Driver: 'Air', Integrator: 'Water' };
+  const myElement = archetypeElement[archetypeKey] || 'Fire';
+
+  const alignmentNoteMap = {
+    same: "Your elemental energy aligns strongly with today's planetary environment — a high-resonance day for maximum impact.",
+    complementary: "Today's planetary energy complements your nature — expect smooth flow and productive cross-functional momentum.",
+    challenging: "Today's planetary field creates constructive friction with your archetype. Use this tension to stretch beyond your comfort zone."
+  };
+
+  const complementaryPairs = {
+    Fire: ['Air'],
+    Air: ['Fire'],
+    Earth: ['Water'],
+    Water: ['Earth']
+  };
+
+  let alignmentType = 'challenging';
+  if (dayElement === myElement) alignmentType = 'same';
+  else if ((complementaryPairs[myElement] || []).includes(dayElement)) alignmentType = 'complementary';
+  const alignmentNote = alignmentNoteMap[alignmentType];
 
   const colors = ["Navy Blue", "Charcoal Grey", "Emerald Green", "Crimson", "Onyx", "Sapphire", "Warm Terracotta", "Steel Blue"];
   
@@ -93,13 +155,16 @@ export const generateCurrentDayDetails = (archetypeKey, targetDateInput = new Da
     "Steel Blue": "Steel blue top or suit jacket. Promotes cool logic, task execution, and sharp problem-solving."
   };
 
+  // Strategies enriched with Nakshatra-specific tone variations
   const strategies = [
     "Prioritize high-leverage asynchronous tasks before noon. Protect your calendar from ad-hoc meetings.",
     "Focus on cross-functional alignment today. Stakeholder buy-in will be more critical than individual execution.",
     "A chaotic operational environment requires your grounding. Implement structured frameworks to resolve today's key bottleneck.",
     "Deploy your energy towards macro-level vision planning. Delegate tactical execution to preserve cognitive bandwidth.",
     "Data-driven decision making is your best asset today. Question assumptions and demand empirical evidence before committing.",
-    "Emotional intelligence will unlock a critical negotiation today. Read the room and adapt your communication style."
+    "Emotional intelligence will unlock a critical negotiation today. Read the room and adapt your communication style.",
+    "Channel today's lunar energy into relationship-building. Reach out to dormant stakeholders and reactivate key alliances.",
+    "Consolidate unfinished initiatives. The planetary climate today rewards completion over initiation — wrap up open loops."
   ];
 
   const behaviorStrategies = {
@@ -107,51 +172,59 @@ export const generateCurrentDayDetails = (archetypeKey, targetDateInput = new Da
       "Act as the catalyst for speed. Encourage team members to make decisions quickly and pivot if assumptions fail.",
       "Lead brainstorming sessions with optimism. Do not let operational constraints restrict your team's creative horizon.",
       "Speak with bold agency today. Share your visionary outline early in meetings to set the pace for others.",
-      "Focus on dynamic delegating. Assign tactical tasks to detail-oriented partners so you can clear larger roadblocks."
+      "Focus on dynamic delegating. Assign tactical tasks to detail-oriented partners so you can clear larger roadblocks.",
+      "Challenge a long-held assumption in your current project. Today's energy supports disruptive, original thinking.",
+      "Pursue one high-risk, high-reward conversation. Your archetype thrives when it pushes past comfortable boundaries."
     ],
     Guardian: [
       "Serve as the stabilizing anchor. Keep meetings focused on timelines, quality standards, and budget constraints.",
       "Document key agreements. Create structured notes and share action items immediately to align team execution.",
       "Conduct a thorough check of high-impact spreadsheets or code. Look for systemic inefficiencies and fix them.",
-      "Be the voice of caution. Challenge overly optimistic plans with historical data and logical workflow limits."
+      "Be the voice of caution. Challenge overly optimistic plans with historical data and logical workflow limits.",
+      "Build or review a risk register for your current project. Proactive risk mapping is your competitive advantage today.",
+      "Formalize an informal process that has been running on assumptions. Structure creates the repeatability your team needs."
     ],
     Driver: [
       "Demand empirical data in discussions. Cut through subjective arguments and prioritize logic over consensus.",
       "Solve a complex technical bottleneck. Devote uninterrupted hours to deep analytical work.",
       "Be direct and goal-oriented. Keep communications concise and challenge the team to justify resource allocation.",
-      "Prioritize high-ROI decisions. Terminate redundant workflows or low-value alignments to speed up project velocity."
+      "Prioritize high-ROI decisions. Terminate redundant workflows or low-value alignments to speed up project velocity.",
+      "Model a scenario analysis for a pending decision. Today's planetary clarity supports sharp, multi-variable thinking.",
+      "Redesign one broken workflow end-to-end. Your analytical eye will spot the systemic root cause others have missed."
     ],
     Integrator: [
       "Leverage empathy to heal project friction. Connect individually with partners to ensure psychological safety.",
       "Lead through consensus-building. Ensure everyone's perspective is heard and integrated into the daily roadmap.",
       "Address team morale directly. Celebrate micro-wins and reinforce the human purpose behind your project.",
-      "Facilitate open dialogue. Break down organizational silos by establishing direct communication channels."
+      "Facilitate open dialogue. Break down organizational silos by establishing direct communication channels.",
+      "Identify one person on your team who feels unheard and create deliberate space for their perspective today.",
+      "Design a team ritual — even a brief one — that reinforces shared purpose and elevates collective energy."
     ]
   };
 
   const healthTips = {
     Pioneer: [
-      "Protect your physical stamina tomorrow: Take a brisk 10-minute walk after lunch to reset your mental baseline.",
+      "Protect your physical stamina: Take a brisk 10-minute walk after lunch to reset your mental baseline.",
       "Unwind your high-octane energy: Dedicate 5 minutes to deep breathing exercises before a high-stakes call.",
-      "High physical activation: Swap your afternoon espresso for green tea to prevent late-day energy crashes.",
+      "High physical activation today: Swap your afternoon espresso for green tea to prevent late-day energy crashes.",
       "Focus on ergonomic posture: Set a reminder to roll your shoulders and stretch your wrists every 90 minutes."
     ],
     Guardian: [
-      "Combat sedentary fatigue: Stand and do light stretching during your routine status meetings tomorrow.",
+      "Combat sedentary fatigue: Stand and do light stretching during your routine status meetings.",
       "Alleviate eye strain: Practice the 20-20-20 rule—every 20 minutes, look at something 20 feet away for 20 seconds.",
       "Ground your nervous system: Step away from all screens during your lunch break to enjoy mindful eating.",
       "Recharge your focus: Take a micro-break every hour to stretch your back and hydrate."
     ],
     Driver: [
-      "Prevent burnout tomorrow: Schedule a hard stop for your workday and wind down with non-screen activity.",
+      "Prevent burnout: Schedule a hard stop for your workday and wind down with non-screen activity.",
       "Release physical tension: Focus on relaxing your jaw and shoulders, which hold most of your execution stress.",
       "Sustain cognitive performance: Drink a glass of water for every hour of deep analytical work.",
       "Boost circulatory health: Take 5 minutes to do light leg stretches or walk in place between project sprints."
     ],
     Integrator: [
-      "Replenish social energy: Plan 15 minutes of quiet solitude or a walk in nature tomorrow to recharge.",
+      "Replenish social energy: Plan 15 minutes of quiet solitude or a walk in nature to recharge.",
       "Establish energetic boundaries: Practice a brief mindfulness check-in before entering team discussions.",
-      "Nurture physical wellness: Ensure you step outside to get natural sunlight for at least 10 minutes in the morning.",
+      "Nurture physical wellness: Step outside to get natural sunlight for at least 10 minutes in the morning.",
       "Reduce cognitive overload: Take short, silent breathing pauses between high-empathy meetings."
     ]
   };
@@ -167,7 +240,7 @@ export const generateCurrentDayDetails = (archetypeKey, targetDateInput = new Da
       "Challenge: Organize your desk drawer by color, then mess it up slightly to build emotional resilience.",
       "Joy tip: Wear mismatched socks tomorrow as a secret, silent rebellion against corporate uniformity.",
       "Playful action: Give your favorite office chair a formal performance review.",
-      "Life hack: Make a spreadsheet tracking the number of times someone says 'circle back' or 'synergy' tomorrow."
+      "Life hack: Make a spreadsheet tracking the number of times someone says 'circle back' or 'synergy' today."
     ],
     Driver: [
       "Challenge: Write a draft email entirely in emojis, laugh at it, and then delete it forever.",
@@ -198,20 +271,15 @@ export const generateCurrentDayDetails = (archetypeKey, targetDateInput = new Da
   const funnyTipList = funnyTips[archetypeKey] || funnyTips.Pioneer;
   const funnyTip = funnyTipList[hash % funnyTipList.length];
 
-  // We also generate current day Rashi/Nakshatra for targetDate
-  const currentObserver = new Observer(0, 0, 0);
-  const currentKundli = getKundli(targetDate, currentObserver);
-  const currentPanchangam = getPanchangamDetails(targetDate, currentObserver);
-  
-  const currentRashi = currentKundli.planets.Moon.rashiName;
-  const nIndex = typeof currentPanchangam.nakshatra === 'object' ? currentPanchangam.nakshatra.index : currentPanchangam.nakshatra;
-  const currentNakshatra = nakshatraNames[nIndex];
-
   return {
     date: targetDate.toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' }),
     dayOfWeek: getDayOfWeek(targetDate),
     rashi: currentRashi,
     nakshatra: currentNakshatra,
+    dayElement,
+    planetaryInfluence,
+    alignmentNote,
+    alignmentType,
     luckyNumber,
     luckyColor,
     dressAdvice,

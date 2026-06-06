@@ -4,9 +4,9 @@ import VerifyDetails from './components/VerifyDetails';
 import ProfileReport from './components/ProfileReport';
 import PreparationPanel from './components/PreparationPanel';
 
-import { 
-  generateInitialAstrology, 
-  generateCorporateProfile 
+import {
+  generateInitialAstrology,
+  generateCorporateProfile
 } from './engine/calculator';
 import './index.css';
 
@@ -119,7 +119,7 @@ function App() {
     }
     const headers = ["Email", "Timestamp", "Archetype", "Code"];
     const rows = leadsList.map(l => [l.email, l.timestamp, l.archetype, l.code]);
-    const csvContent = "data:text/csv;charset=utf-8," 
+    const csvContent = "data:text/csv;charset=utf-8,"
       + [headers.join(","), ...rows.map(e => e.map(val => `"${val}"`).join(","))].join("\n");
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
@@ -138,7 +138,7 @@ function App() {
     }
     const headers = ["Email", "Timestamp", "Status"];
     const rows = subsList.map(s => [s.email, s.timestamp, s.status]);
-    const csvContent = "data:text/csv;charset=utf-8," 
+    const csvContent = "data:text/csv;charset=utf-8,"
       + [headers.join(","), ...rows.map(e => e.map(val => `"${val}"`).join(","))].join("\n");
     const encodedUri = encodeURI(csvContent);
     const link = document.createElement("a");
@@ -186,10 +186,10 @@ function App() {
 
             {/* Right Panel: Daily preparation details */}
             <div className="right-panel">
-              <PreparationPanel 
-                archetypeKey={archetypeKey} 
-                profile={profile} 
-                userEmail={email} 
+              <PreparationPanel
+                archetypeKey={archetypeKey}
+                profile={profile}
+                userEmail={email}
                 astrologyData={astrologyData}
                 onSaveProfile={handleSaveProfile}
               />
@@ -197,12 +197,12 @@ function App() {
           </div>
         )}
       </main>
-      
+
       <footer className="app-footer" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem' }}>
         <p>&copy; {new Date().getFullYear()} Kismat Corporate Insights. Confidential & Proprietary.</p>
-        <button 
-          onClick={() => setShowAdmin(true)} 
-          className="btn-secondary" 
+        <button
+          onClick={() => setShowAdmin(true)}
+          className="btn-secondary"
           style={{ fontSize: '0.75rem', padding: '0.25rem 0.75rem', marginTop: '0.5rem', background: 'rgba(255,255,255,0.02)', borderColor: 'var(--card-border)' }}
         >
           ⚙️ Lead Management Admin
@@ -240,7 +240,7 @@ function App() {
               <h2 className="title-md" style={{ margin: 0, background: 'linear-gradient(to right, #60a5fa, #c084fc)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', fontWeight: '800' }}>
                 Lead & Analytics Management
               </h2>
-              <button 
+              <button
                 onClick={() => setShowAdmin(false)}
                 className="btn-secondary"
                 style={{ padding: '0.25rem 0.75rem', border: 'none', background: 'rgba(255,255,255,0.05)', borderRadius: '6px' }}
@@ -248,13 +248,13 @@ function App() {
                 ✕ Close
               </button>
             </div>
-            
+
             <p className="subtitle" style={{ margin: 0 }}>
               Review captured customer leads and newsletter subscriptions. Use the exports to ingest into CRM or billing software.
             </p>
 
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '1.5rem', minHeight: '0' }}>
-              
+
               {/* Leads Column */}
               <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -263,7 +263,7 @@ function App() {
                     📥 Export CSV
                   </button>
                 </div>
-                
+
                 <div style={{
                   background: 'rgba(0,0,0,0.3)',
                   border: '1px solid var(--card-border)',
@@ -299,7 +299,7 @@ function App() {
                     📥 Export CSV
                   </button>
                 </div>
-                
+
                 <div style={{
                   background: 'rgba(0,0,0,0.3)',
                   border: '1px solid var(--card-border)',
@@ -330,14 +330,14 @@ function App() {
             </div>
 
             <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '1rem', borderTop: '1px solid var(--card-border)', paddingTop: '1.5rem', flexWrap: 'wrap', gap: '1rem' }}>
-              <button 
+              <button
                 onClick={clearData}
                 className="btn-secondary"
                 style={{ color: '#ef4444', borderColor: 'rgba(239, 68, 68, 0.2)', padding: '0.5rem 1rem' }}
               >
                 🗑️ Clear All App Data
               </button>
-              <button 
+              <button
                 onClick={() => setShowAdmin(false)}
                 className="btn-primary"
                 style={{ width: 'auto', margin: 0, padding: '0.5rem 1.5rem' }}
